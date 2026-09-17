@@ -19,7 +19,6 @@ def run(scene,speed=1, gizmos=False, scriptRefreshRate=None,tick=1/60, Render=Tr
         scriptRefreshRate = 2
     else:
         scriptRefreshRate = scriptRefreshRate / tick
-    print(scriptRefreshRate)
     TARGET_FPS = 60
     # bereshit.dt = TARGET_FPS * 0.000165
 
@@ -92,7 +91,7 @@ def run(scene,speed=1, gizmos=False, scriptRefreshRate=None,tick=1/60, Render=Tr
         start_async_loop(MaxTime=MaxTime)
 
 def run_max_speed(scene, scriptRefreshRate=None, tick=1 / 60, Render=True, ForceRenderInitialize=True,
-                  gravity=Vector3(0, -9.8, 0), physics_epochs=10, MaxTime=None):
+                  gravity=Vector3(0, -9.8, 0), physics_epochs=0, MaxTime=None):
     Exit = [False]
     if not Render:
         ForceRenderInitialize = False

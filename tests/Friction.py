@@ -1,6 +1,6 @@
 from bereshit import Core, Camera, GameObject
 from bereshit.addons.essentials import FPS_cam, CamController
-from bereshit.bereshitCore import  Vector3, BoxCollider, Rigidbody
+from bereshit.bereshitCore import Vector3, BoxCollider, Rigidbody
 
 cam = GameObject(position=Vector3(0,-4,-3)).add_component(Camera(shading="material preview"), CamController(), FPS_cam())
 
