@@ -1,7 +1,7 @@
 import copy
 
 from bereshit import Material, MeshRander
-from bereshit.bereshitCore import GameObject
+from bereshit.bereshitCore import GameObject, Joint
 
 
 class GameObject(GameObject):
@@ -52,6 +52,17 @@ class GameObject(GameObject):
         if id(self) in memo:
             return memo[id(self)]
 
+        # Joints are added last, once every copied body exists, and held to the copy of their other body.
+        # A joint whose other body isn't part of the copy stays on that body.
+        joints = []
+        obj = self._copy_hierarchy(memo, joints)
+        for owner, joint in joints:
+            body = joint.body_b
+            joint.body_b = memo.get(id(body), body)
+            owner.add_component(joint)
+        return obj
+
+    def _copy_hierarchy(self, memo, joints):
         obj = GameObject(
             self.transform.position,
             self.transform.rotation,
@@ -66,28 +77,16 @@ class GameObject(GameObject):
         for component in self._components.values():
             component_copy = copy.copy(component)
 
-            if component_copy is not None:
+            if isinstance(component_copy, Joint):
+                joints.append((obj, component_copy))
+            elif component_copy is not None:
                 obj.add_component(component_copy)
 
         for child in self.children:
-            child_copy = copy.deepcopy(child, memo)
+            if isinstance(child, GameObject):
+                child_copy = child._copy_hierarchy(memo, joints)
+            else:
+                child_copy = copy.deepcopy(child, memo)
             obj.add_child(child_copy)
 
         return obj
-
-    @staticmethod
-    def CopyHierarchy(original, object_map):
-        copied = GameObject(position=original.position, rotation=original.rotation, size=original.size, name=original.name)
-        object_map[original] = copied
-
-        for comp in original.components:
-            copied_comp = comp.copy()
-
-
-    def Copy(self):
-        objectMap = {}
-        result = GameObject.CopyHierarchy(self, objectMap)
-        GameObject.RemapHierarchy(result, objectMap)
-        GameObject.AttachHierarchy(result)
-        return result
-
