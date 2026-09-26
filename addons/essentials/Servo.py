@@ -20,7 +20,7 @@ class Servo(Component):
 
         self._servo.add_component(
             HingeJoint(self._mount, self._axis),
-            ServoController(self._mount, max_rotation=self._max_r, min_rotation=self._min_r, input_speed=self._speed, max_speed=self._max_speed, max_torque=self._torque))
+            ServoController(self._mount, max_rotation=self._max_r, min_rotation=self._min_r, input_speed=self._speed, max_speed=self._max_speed, max_torque=self._torque, axis=self._axis))
 
         return "Servo"
 
@@ -29,9 +29,11 @@ class ServoController(Component):
     def get_target_angle(self):
         return self._target_angle
 
-    def __init__(self, other, max_rotation=90, min_rotation=-90, max_speed=1, input_speed=60, max_torque=1):
+    def __init__(self, other, max_rotation=90, min_rotation=-90, max_speed=1, input_speed=60, max_torque=1, axis=None):
         super(ServoController, self).__init__()
         self._target_angle = 0.0
+        # Hinge axis in the mount's local frame (the axis given to the HingeJoint).
+        self._local_axis = axis.normalized() if axis is not None else None
 
         self.max_speed = max_speed
         self.input_speed = input_speed
@@ -61,12 +63,18 @@ class ServoController(Component):
     def fix(self, dt):
         axis = self.parent.HingeJoint.axis_world.normalized()
 
+        # relative_q is expressed in the mount's frame, so measure the angle around the local axis.
+        local_axis = self._local_axis if self._local_axis is not None else axis
         relative_q = self.other.transform.quaternion.conjugate() * self.parent.transform.quaternion
-        current_angle = relative_q.to_euler().dot(axis)
+        current_angle = relative_q.to_euler().dot(local_axis)
 
         error = self._target_angle - current_angle
         error = (error + 180) % 360 - 180
 
+        # Note: this is rad/s (and max_speed is effectively not enforced). With the light bodies used here,
+        # one tick of max torque changes the speed by ~30 rad/s and the joint solver removes it again the
+        # next tick, so the controller acts as bang-bang toward the target. A proper deg/s speed loop was
+        # tested and chatters; a real fix needs a motor inside the C++ HingeJoint.
         angular_velocity = self.rb.angular_velocity.dot(axis)
 
         # degrees/sec

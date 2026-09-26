@@ -9,6 +9,18 @@ __pycache__/
 venv/
 env/
 
+# Editor / IDE (machine-specific paths)
+.vscode/
+.vexp/
+
 # OS junk
 .DS_Store
 Thumbs.db
+
+# Nested repositories (separate git repos, committed on their own)
+/addons/PPO/
+/bereshitCore/
+
+# Reference photos dropped in the repo root
+/*.jpg
+/*.jpeg
