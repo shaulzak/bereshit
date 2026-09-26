@@ -11,14 +11,18 @@ from bereshitCore import GameObject, Vector3, World
 # import old_render as render
 
 
+def script_steps(scriptRefreshRate, tick):
+    """Physics steps between scripts' Update calls: every scriptRefreshRate seconds (default ~30 Hz)."""
+    if scriptRefreshRate is None:
+        scriptRefreshRate = 1 / 30
+    return max(1, round(scriptRefreshRate / tick))
+
+
 def run(scene,speed=1, gizmos=False, scriptRefreshRate=None,tick=1/60, Render=True, ForceRenderInitialize=True, gravity=Vector3(0,-9.8,0), physics_epochs=10, scale=1, MaxTime=None):
     Exit = [False]
     if not Render:
         ForceRenderInitialize = False
-    if scriptRefreshRate is None:
-        scriptRefreshRate = 2
-    else:
-        scriptRefreshRate = scriptRefreshRate / tick
+    scriptRefreshRate = script_steps(scriptRefreshRate, tick)
     TARGET_FPS = 60
     # bereshit.dt = TARGET_FPS * 0.000165
 
@@ -95,10 +99,7 @@ def run_max_speed(scene, scriptRefreshRate=None, tick=1 / 60, Render=True, Force
     Exit = [False]
     if not Render:
         ForceRenderInitialize = False
-    if scriptRefreshRate is None:
-        scriptRefreshRate = 2
-    else:
-        scriptRefreshRate = scriptRefreshRate / tick
+    scriptRefreshRate = script_steps(scriptRefreshRate, tick)
 
     if not isinstance(scene, list):
         scene = [scene]

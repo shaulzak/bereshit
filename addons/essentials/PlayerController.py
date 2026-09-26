@@ -1,11 +1,12 @@
-from bereshit import Vector3
+from bereshit import Vector3, Component
 
 from collections import deque
 import keyboard
 
 
-class PlayerController:
+class PlayerController(Component):
     def __init__(self, speed=5, speed2=100, record_inputs=False, max_queue_size=1000):
+        super().__init__()
         self.force_amount = speed
         self.force_amount2 = speed2
 

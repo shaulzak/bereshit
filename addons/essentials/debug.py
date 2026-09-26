@@ -3,13 +3,14 @@ import time
 import numpy as np
 
 import bereshit
-from bereshit import Quaternion,Vector3, MeshRander
+from bereshit import Quaternion,Vector3, MeshRander, Component
 import mouse
 
 CENTER_X = 960
 CENTER_Y = 540
-class debug:
+class debug(Component):
     def __init__(self,other):
+        super().__init__()
         self.total_pitch = 0.0
         self.total_yaw = 0.0
         self.state = 0

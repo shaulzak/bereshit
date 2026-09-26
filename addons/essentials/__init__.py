@@ -4,4 +4,4 @@ from .debug import debug          # etc.
 from .FPS_cam import FPS_cam
 from .Servo import Servo
 
-__all__ = ["CamController", "PlayerController", "debug", "FPS_cam", "Shoot"]
+__all__ = ["CamController", "PlayerController", "debug", "FPS_cam", "Servo"]

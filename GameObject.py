@@ -23,7 +23,9 @@ class GameObject(GameObject):
 
     def _add_component(self, component):
         name= None
-        if "attach" in type(component).__dict__:
+        # The nearest attach in the class hierarchy, also an inherited one - but not the C++ Component's.
+        owner = next((c for c in type(component).__mro__ if "attach" in c.__dict__), None)
+        if owner is not None and owner.__module__ != "bereshitCore":
             name = component.attach(self)
         super().add_component(component)
 
