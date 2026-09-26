@@ -70,7 +70,8 @@ class MeshRander(Component):
             else:
                 raise ValueError(f"No generator found for shape: {self._shape}")
 
-        elif self._vertices is not None and self._edges is not None and self._triangles is not None:
+        # a mesh built already (given, or a copy of an attached one): only box shapes have triangles
+        elif self._vertices is not None and self._edges is not None:
             self._vertices = self._vertices
             self._edges = self._edges
             self._triangles = self._triangles
