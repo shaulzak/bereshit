@@ -49,12 +49,7 @@ Shading modes `wire`, `solid`, `material preview` are selected on the `Camera` c
 - `addons/PPO`: multi-agent PPO (torch) where `Agent` is a component and many agents share one `Trainer`; examples in `addons/PPO/examples`.
 
 **C++ port (`bereshitCore/`)**
-An in-progress C++20 reimplementation of the core (GameObject/Transform/Component, Rigidbody, colliders, joints, World) exposed to Python via pybind11 (`bindings.cpp`). Build per `build.txt`:
-```bash
-cmake -S . -B build -Dpybind11_DIR="<site-packages>/pybind11/share/cmake/pybind11"
-cmake --build build --config Release
-```
-`bereshitCore/__init__.py` loads the module from `build/Release`. `cbuild.txt` is an alternate CMakeLists that builds `main.cpp` + `test/` as a standalone executable for C++-side tests. The Python engine does not currently depend on it.
+An in-progress C++20 port with its own CLAUDE.md (build, tests). The Python engine does not depend on it.
 
 ## Notes
 
